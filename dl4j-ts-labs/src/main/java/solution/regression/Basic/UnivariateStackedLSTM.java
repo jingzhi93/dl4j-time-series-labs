@@ -65,13 +65,13 @@ public class UnivariateStackedLSTM {
         }
 
         INDArray testInput1 = Nd4j.create(new double[]{10, 20, 30}).reshape(new int[]{1, 3, 1});
-        System.out.println(network.rnnTimeStep(testInput1));
+        System.out.println(network.output(testInput1));
 
         INDArray testInput2 = Nd4j.create(new double[]{20, 30, 40}).reshape(new int[]{1, 3, 1});
-        System.out.println(network.rnnTimeStep(testInput2));
+        System.out.println(network.output(testInput2));
 
         INDArray testInput3 = Nd4j.create(new double[]{50, 60, 70}).reshape(new int[]{1, 3, 1});
-        System.out.println(network.rnnTimeStep(testInput3));
+        System.out.println(network.output(testInput3));
     }
 
 }

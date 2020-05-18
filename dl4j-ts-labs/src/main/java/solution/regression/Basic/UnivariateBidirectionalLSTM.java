@@ -1,12 +1,13 @@
 package solution.regression.Basic;
 
-
 import org.deeplearning4j.core.storage.StatsStorage;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+import org.deeplearning4j.nn.conf.layers.GravesBidirectionalLSTM;
 import org.deeplearning4j.nn.conf.layers.LSTM;
 import org.deeplearning4j.nn.conf.layers.RnnOutputLayer;
+import org.deeplearning4j.nn.conf.layers.recurrent.Bidirectional;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.ui.api.UIServer;
@@ -18,15 +19,8 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.learning.config.RmsProp;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
-/**
- * This example is inspired by Jason Brownlee from Machine Learning Mastery
- *
- * Src: https://machinelearningmastery.com/how-to-develop-lstm-models-for-time-series-forecasting/
- *
- * In this example, we create
- */
+public class UnivariateBidirectionalLSTM {
 
-public class UnivariateLSTM {
     private static double learningRate = 0.001;
 
     public static void main(String[] args) {
@@ -35,7 +29,10 @@ public class UnivariateLSTM {
         TimeSeriesData data = new TimeSeriesData(sequenceData,3,1);
         INDArray feature = data.getFeatureMatrix();
         INDArray label = data.getLabels();
-        int sequanceLength = data.getSequenceLength();
+        int sequenceLength = data.getSequenceLength();
+
+        System.out.println(feature);
+        System.out.println(label);
 
         MultiLayerConfiguration config = new NeuralNetConfiguration.Builder()
                 .seed(123)
@@ -44,13 +41,13 @@ public class UnivariateLSTM {
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .miniBatch(false)
                 .list()
-                .layer(0, new LSTM.Builder()
-                        .nIn(sequanceLength)
+                .layer(0, new Bidirectional(new LSTM.Builder()
+                        .nIn(sequenceLength)
                         .nOut(50)
                         .activation(Activation.TANH)
-                        .build())
+                        .build()))
                 .layer(1, new RnnOutputLayer.Builder()
-                        .nIn(50)
+                        .nIn(100)
                         .nOut(1)
                         .lossFunction(LossFunctions.LossFunction.MSE)
                         .activation(Activation.IDENTITY)
